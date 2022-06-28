@@ -1,0 +1,19 @@
+.content {
+  // border: 1px solid red;
+  width: 150px;
+  img {
+    width: 150px;
+    border-bottom: 3px solid var(--red-900);
+  }
+
+  .footerCard {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.75rem 0;
+
+    svg {
+      color: var(--red-900);
+      font-size: 1.25rem;
+    }
+  }
+}

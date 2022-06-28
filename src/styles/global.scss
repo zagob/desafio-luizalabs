@@ -1,0 +1,48 @@
+:root {
+  --white: "#FFFFFF";
+
+  --gray-400: #8b8b8b;
+  --gray-500: #424242;
+
+  --red-200: #fdebeb;
+  --red-300: #f97b7b;
+  --red-500: #ff0000;
+  --red-700: #ec1d24;
+  --red-900: #e8282d;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1080px) {
+  html {
+    font-size: 93.75%;
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    font-size: 87.5%;
+  }
+}
+
+body,
+input,
+textarea,
+select,
+button {
+  font: 400 1rem "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
