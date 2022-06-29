@@ -711,7 +711,7 @@
   dependencies:
     "history" "^5.2.0"
 
-"react@^18.0.0", "react@^18.2.0", "react@>=16", "react@>=16.8":
+"react@^18.0.0", "react@^18.2.0", "react@>=16", "react@>=16.8", "react@>=16.8.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"
@@ -813,6 +813,11 @@
   dependencies:
     "escalade" "^3.1.1"
     "picocolors" "^1.0.0"
+
+"use-debounce@^8.0.1":
+  "integrity" "sha512-6tGAFJKJ0qCalecaV7/gm/M6n238nmitNppvR89ff1yfwSFjwFKR7IQZzIZf1KZRQhqNireBzytzU6jgb29oVg=="
+  "resolved" "https://registry.npmjs.org/use-debounce/-/use-debounce-8.0.1.tgz"
+  "version" "8.0.1"
 
 "vite@^2.9.9":
   "integrity" "sha512-AsOBAaT0AD7Mhe8DuK+/kE4aWYFMx/i0ZNi98hJclxb4e0OhQcZYUrvLjIaQ8e59Ui7txcvKMiJC1yftqpQoDw=="
