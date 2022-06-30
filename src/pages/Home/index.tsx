@@ -18,12 +18,12 @@ interface CharactersParams {
 }
 
 export function Home() {
-  const {} = useFavoriteContextProvider();
+  const { favoriteName } = useFavoriteContextProvider();
 
   const [characters, setCharacters] = useState<CharactersParams[]>([]);
   const [checkFilterOrderName, setCheckFilterOrderName] = useState(false);
   const [checkFilterFavorite, setCheckFilterFavorite] = useState(false);
-  const [favoriteName, setFavoriteName] = useState<string[]>([]);
+
   const [loading, setLoading] = useState(false);
 
   async function getCharacters(orderByName: boolean) {
@@ -57,12 +57,6 @@ export function Home() {
     }
   }, [checkFilterFavorite, favoriteName]);
 
-  useEffect(() => {
-    setFavoriteName(
-      JSON.parse(localStorage.getItem("favoriteNameMarvelDeveloper") || "")
-    );
-  }, []);
-
   const debounced = useDebouncedCallback(async (value: string) => {
     if (value.trim() === "") {
       getCharacters(checkFilterOrderName);
@@ -73,40 +67,6 @@ export function Home() {
     );
     setCharacters(result.data.data.results);
   }, 500);
-
-  function handleAddFavorite(name: string) {
-    if (favoriteName.length === 5) {
-      return alert("Número maximo de favoritos é 5");
-    }
-    let getFav = JSON.parse(
-      localStorage.getItem("favoriteNameMarvelDeveloper")!
-    );
-    setFavoriteName((arr) => [...arr, name]);
-    if (!getFav) {
-      localStorage.setItem(
-        "favoriteNameMarvelDeveloper",
-        JSON.stringify([name])
-      );
-    } else {
-      getFav.push(name);
-      localStorage.setItem(
-        "favoriteNameMarvelDeveloper",
-        JSON.stringify(getFav)
-      );
-    }
-  }
-
-  function handleRemoveFavorite(name: string) {
-    setFavoriteName((arr) => arr.filter((old) => old !== name));
-    let getFav = JSON.parse(
-      localStorage.getItem("favoriteNameMarvelDeveloper")!
-    );
-    const returnAllFavorite = getFav.filter((arr: string) => arr !== name);
-    localStorage.setItem(
-      "favoriteNameMarvelDeveloper",
-      JSON.stringify(returnAllFavorite)
-    );
-  }
 
   return (
     <div className={styles.container}>
@@ -159,9 +119,6 @@ export function Home() {
                   key={character.id}
                   image={character.thumbnail}
                   name={character.name}
-                  favoriteName={favoriteName}
-                  onHandleAddFavorite={handleAddFavorite}
-                  onHandleRemoveFavorite={handleRemoveFavorite}
                 />
               ))}
             </>

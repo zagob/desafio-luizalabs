@@ -1,6 +1,4 @@
 .content {
-  width: 100%;
-
   &:nth-child(n + 4) ~ .content {
     margin-top: 2rem;
   }

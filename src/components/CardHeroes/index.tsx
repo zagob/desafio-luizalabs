@@ -2,6 +2,7 @@ import { Heart } from "phosphor-react";
 import styles from "./CardHeroes.module.scss";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 
 interface CardHeroesProps {
   id: number;
@@ -10,19 +11,21 @@ interface CardHeroesProps {
     extension: string;
   };
   name: string;
-  favoriteName: string[];
-  onHandleAddFavorite: (name: string) => void;
-  onHandleRemoveFavorite: (name: string) => void;
+  // favoriteName: string[];
+  // onHandleAddFavorite: (name: string) => void;
+  // onHandleRemoveFavorite: (name: string) => void;
 }
 
 export function CardHeroes({
   id,
   image,
   name,
-  onHandleAddFavorite,
-  onHandleRemoveFavorite,
-  favoriteName,
-}: CardHeroesProps) {
+}: // onHandleAddFavorite,
+// onHandleRemoveFavorite,
+// favoriteName,
+CardHeroesProps) {
+  const { favoriteName, handleAddFavorite, handleRemoveFavorite } =
+    useFavoriteContextProvider();
   const getNameFavorite = localStorage.getItem(name);
   const hasFavorite =
     favoriteName.some((oldName) => oldName === name) ||
@@ -42,7 +45,7 @@ export function CardHeroes({
           <Heart
             className={styles.Favorite}
             weight="fill"
-            onClick={() => onHandleRemoveFavorite(name)}
+            onClick={() => handleRemoveFavorite(name)}
           />
         ) : (
           <Heart
@@ -52,9 +55,7 @@ export function CardHeroes({
                 ? styles.blockFavorite
                 : styles.Favorite
             }
-            onClick={() =>
-              numberOfFavoriteLimit < 5 && onHandleAddFavorite(name)
-            }
+            onClick={() => numberOfFavoriteLimit < 5 && handleAddFavorite(name)}
           />
         )}
       </div>

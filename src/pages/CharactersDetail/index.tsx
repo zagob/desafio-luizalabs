@@ -1,4 +1,11 @@
-import { Heart, Star } from "phosphor-react";
+import {
+  ArrowArcLeft,
+  ArrowBendDoubleUpLeft,
+  ArrowDownLeft,
+  CaretLeft,
+  Heart,
+  Star,
+} from "phosphor-react";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +14,7 @@ import { Footer } from "../../components/Footer";
 import { api } from "../../services/axios";
 
 import styles from "./CharacterDetail.module.scss";
+import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 
 interface CharacterDetailProps {
   name: string;
@@ -35,10 +43,16 @@ interface ComicProps {
 export function CharactersDetail() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { favoriteName, handleAddFavorite, handleRemoveFavorite } =
+    useFavoriteContextProvider();
   const [dataCharacter, setDataCharacter] = useState<CharacterDetailProps>();
   const [dataComics, setDataComics] = useState<ComicProps[]>([]);
   const [finalDateComic, setDateComic] = useState("");
-  const [isCharacterFavorite, setIsCharacterFavorite] = useState(false);
+
+  const isCharacterFavorite = favoriteName.some(
+    (favorite) => favorite === dataCharacter?.name
+  );
+  const isFavoriteBlock = !isCharacterFavorite && favoriteName.length === 5;
 
   useEffect(() => {
     async function getCharacters() {
@@ -62,12 +76,6 @@ export function CharactersDetail() {
       } catch (err) {
         navigate("/");
       } finally {
-        const favorite = JSON.parse(
-          localStorage.getItem("favoriteNameMarvelDeveloper") || ""
-        ) as [];
-        setIsCharacterFavorite(
-          favorite.some((nameFavorite) => nameFavorite === dataCharacter?.name)
-        );
       }
     }
 
@@ -77,20 +85,43 @@ export function CharactersDetail() {
   return (
     <>
       <div className={styles.container}>
+        <header>
+          <div>
+            <button onClick={() => navigate("/")}>
+              <CaretLeft size={32} weight="fill" />
+              <span>voltar</span>
+            </button>
+          </div>
+          <img src="/src/assets/logo_menor.svg" />
+        </header>
         <section className={styles.containerDetail}>
           <div className={styles.contentInfo}>
             <div className={styles.info}>
               <div className={styles.headerInfo}>
                 <h1>{dataCharacter?.name}</h1>
-                <Heart
-                  weight={isCharacterFavorite ? "fill" : "regular"}
-                  color="red"
-                  size={32}
-                />
+
+                {isCharacterFavorite ? (
+                  <Heart
+                    weight="fill"
+                    size={32}
+                    onClick={() => handleRemoveFavorite(dataCharacter?.name!)}
+                  />
+                ) : (
+                  <Heart
+                    className={isFavoriteBlock ? styles.block : ""}
+                    weight={isFavoriteBlock ? "thin" : "regular"}
+                    size={32}
+                    onClick={
+                      isFavoriteBlock
+                        ? () => {}
+                        : () => handleAddFavorite(dataCharacter?.name!)
+                    }
+                  />
+                )}
               </div>
               <p>
                 {dataCharacter?.description === ""
-                  ? "sem"
+                  ? "Nenhuma descrição encontrada"
                   : dataCharacter?.description}
               </p>
             </div>
