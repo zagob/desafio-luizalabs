@@ -8,7 +8,7 @@ import { InputSearch } from "../../components/InputSearch";
 import { InputCheckFilter } from "../../components/InputCheckFilter";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 import { generateHash, timestamp } from "../../utils/generateHashUrl";
-import { Footer } from "../../components/Footer";
+import logo from '/src/assets/logo.svg';
 
 interface CharactersParams {
   id: number;
@@ -75,7 +75,7 @@ export function Home() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <img src="./src/assets/logo.svg" alt="Logo da marvel" />
+        <img src={logo} alt="Logo da marvel" />
 
         <h1>Explore o universo</h1>
         <span>
