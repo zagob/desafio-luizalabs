@@ -75,7 +75,7 @@ export function Home() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <img src="src/assets/logo.svg" alt="Logo da marvel" />
+        <img src="./src/assets/logo.svg" alt="Logo da marvel" />
 
         <h1>Explore o universo</h1>
         <span>
