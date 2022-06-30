@@ -1,7 +1,6 @@
-import { Heart } from "phosphor-react";
 import styles from "./CardHeroes.module.scss";
+import { Heart } from "phosphor-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 
 interface CardHeroesProps {
@@ -11,19 +10,9 @@ interface CardHeroesProps {
     extension: string;
   };
   name: string;
-  // favoriteName: string[];
-  // onHandleAddFavorite: (name: string) => void;
-  // onHandleRemoveFavorite: (name: string) => void;
 }
 
-export function CardHeroes({
-  id,
-  image,
-  name,
-}: // onHandleAddFavorite,
-// onHandleRemoveFavorite,
-// favoriteName,
-CardHeroesProps) {
+export function CardHeroes({ id, image, name }: CardHeroesProps) {
   const { favoriteName, handleAddFavorite, handleRemoveFavorite } =
     useFavoriteContextProvider();
   const getNameFavorite = localStorage.getItem(name);

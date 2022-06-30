@@ -1,21 +1,17 @@
-import {
-  ArrowArcLeft,
-  ArrowBendDoubleUpLeft,
-  ArrowDownLeft,
-  CaretLeft,
-  Heart,
-  Star,
-} from "phosphor-react";
+import { CaretLeft, Heart, Star } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardComic } from "../../components/CardComic";
-import { Footer } from "../../components/Footer";
 import { api } from "../../services/axios";
 
 import styles from "./CharacterDetail.module.scss";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 import { generateHash, timestamp } from "../../utils/generateHashUrl";
+
+import logoMobile from "/src/assets/logo_menor.svg";
+import iconAvailable from "/src/assets/ic_quadrinhos.svg";
+import iconMovie from "/src/assets/ic_trailer.svg";
 
 interface CharacterDetailProps {
   name: string;
@@ -97,7 +93,7 @@ export function CharactersDetail() {
               <span>voltar</span>
             </button>
           </div>
-          <img src="/src/assets/logo_menor.svg" />
+          <img src={logoMobile} />
         </header>
         <section className={styles.containerDetail}>
           <div className={styles.contentInfo}>
@@ -136,14 +132,14 @@ export function CharactersDetail() {
                 <div>
                   <span>Quadrinhos</span>
                   <span>
-                    <img src="/src/assets/ic_quadrinhos.svg" alt="" />
+                    <img src={iconAvailable} alt="" />
                     {dataCharacter?.comics.available}
                   </span>
                 </div>
                 <div>
                   <span>Filmes</span>
                   <span>
-                    <img src="/src/assets/ic_trailer.svg" alt="" />
+                    <img src={iconMovie} alt="" />
                     {dataCharacter?.series.available}
                   </span>
                 </div>

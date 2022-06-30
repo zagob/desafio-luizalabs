@@ -23,7 +23,7 @@
     color: var(--gray-400);
   }
 
-  @media(max-width: 400px) {
+  @media (max-width: 400px) {
     img {
       width: 300px;
     }
@@ -94,5 +94,11 @@
     @media (max-width: 400px) {
       grid-template-columns: 1fr;
     }
+  }
+  .loading {
+    height: 100vh;
+    text-align: center;
+    border: 1px solid red;
+    width: 100%;
   }
 }

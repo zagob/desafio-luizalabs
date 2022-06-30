@@ -1,0 +1,11 @@
+.content {
+  &:nth-child(n + 4) ~ .content {
+    margin-top: 2rem;
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

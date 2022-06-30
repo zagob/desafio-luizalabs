@@ -8,7 +8,14 @@ import { InputSearch } from "../../components/InputSearch";
 import { InputCheckFilter } from "../../components/InputCheckFilter";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 import { generateHash, timestamp } from "../../utils/generateHashUrl";
-import logo from '/src/assets/logo.svg';
+
+import logo from "/src/assets/logo.svg";
+import heroi from "/src/assets/ic_heroi.svg";
+import {
+  SkeletonLoadingCard,
+  UseSkeletonLoading,
+} from "../../components/SkeletonLoadingCard";
+import { SkeletonLoadingFilter } from "../../components/SkeletonLoadingFilter";
 
 interface CharactersParams {
   id: number;
@@ -87,36 +94,41 @@ export function Home() {
       <InputSearch onChange={(e) => debounced(e.target.value)} />
 
       <main className={styles.main}>
-        <div className={styles.contentFilter}>
-          <span>Encontrados {characters.length} heróis</span>
-
-          <div className={styles.filters}>
-            <div>
-              <span>
-                <img src="/src/assets/ic_heroi.svg" alt="icone heroi" />
-                ordenar por nome - A/Z
-              </span>
-              <InputCheckFilter
-                onChange={(e) => setCheckFilterOrderName(e.target.checked)}
-              />
+        {loading ? (
+          <>
+            <SkeletonLoadingFilter />
+            <div className={styles.contentCards}>
+              <UseSkeletonLoading />
             </div>
-            <div>
-              <span>
-                <Heart weight="fill" size={22} />
-                Somente favoritos
-              </span>
-              <InputCheckFilter
-                onChange={(e) => setCheckFilterFavorite(e.target.checked)}
-              />
-            </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.contentFilter}>
+              <span>Encontrados {characters.length} heróis</span>
 
-        <div className={styles.contentCards}>
-          {loading ? (
-            <h1>Carregando...</h1>
-          ) : (
-            <>
+              <div className={styles.filters}>
+                <div>
+                  <span>
+                    <img src={heroi} alt="icone heroi" />
+                    ordenar por nome - A/Z
+                  </span>
+                  <InputCheckFilter
+                    onChange={(e) => setCheckFilterOrderName(e.target.checked)}
+                  />
+                </div>
+                <div>
+                  <span>
+                    <Heart weight="fill" size={22} />
+                    Somente favoritos
+                  </span>
+                  <InputCheckFilter
+                    onChange={(e) => setCheckFilterFavorite(e.target.checked)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.contentCards}>
               {characters.map((character) => (
                 <CardHeroes
                   id={character.id}
@@ -125,9 +137,9 @@ export function Home() {
                   name={character.name}
                 />
               ))}
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
