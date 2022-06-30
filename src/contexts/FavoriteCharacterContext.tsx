@@ -26,8 +26,17 @@ export function FavoriteCharacterContextProvider({
   const [favoriteName, setFavoriteName] = useState<string[]>([]);
 
   useEffect(() => {
+    const hashData = JSON.parse(
+      localStorage.getItem("favoriteNameMarvelDeveloper")!
+    );
+
+    if (!hashData) {
+      return;
+    }
+
     setFavoriteName(
-      JSON.parse(localStorage.getItem("favoriteNameMarvelDeveloper") || "")
+      JSON.parse(localStorage.getItem("favoriteNameMarvelDeveloper") || "") ||
+        []
     );
   }, []);
 
