@@ -6,6 +6,7 @@ import { api } from "../../services/axios";
 import { useDebouncedCallback } from "use-debounce";
 import { InputSearch } from "../../components/InputSearch";
 import { InputCheckFilter } from "../../components/InputCheckFilter";
+import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
 
 interface CharactersParams {
   id: number;
@@ -17,6 +18,8 @@ interface CharactersParams {
 }
 
 export function Home() {
+  const {} = useFavoriteContextProvider();
+
   const [characters, setCharacters] = useState<CharactersParams[]>([]);
   const [checkFilterOrderName, setCheckFilterOrderName] = useState(false);
   const [checkFilterFavorite, setCheckFilterFavorite] = useState(false);
@@ -68,7 +71,6 @@ export function Home() {
     const result = await api.get(
       `/characters?name=${value}&ts=2&apikey=7de223381da2a01ec37a15c920c7dc57&hash=72d736266e3888d5923aecb9b3b0c8b6`
     );
-    console.log(result.data.data.results);
     setCharacters(result.data.data.results);
   }, 500);
 
