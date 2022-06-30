@@ -7,6 +7,8 @@ import { useDebouncedCallback } from "use-debounce";
 import { InputSearch } from "../../components/InputSearch";
 import { InputCheckFilter } from "../../components/InputCheckFilter";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
+import { generateHash, timestamp } from "../../utils/generateHashUrl";
+import { Footer } from "../../components/Footer";
 
 interface CharactersParams {
   id: number;
@@ -31,14 +33,14 @@ export function Home() {
     const result = await api.get(
       `/characters?orderBy=${
         orderByName ? "-name" : "name"
-      }&ts=2&apikey=7de223381da2a01ec37a15c920c7dc57&hash=72d736266e3888d5923aecb9b3b0c8b6`
+      }&ts=${timestamp}&apikey=${
+        import.meta.env.VITE_PUBLIC_KEY
+      }&hash=${generateHash}`
     );
 
     if (result) {
       setLoading(false);
     }
-
-    console.log(result.data.data.results);
 
     setCharacters(result.data.data.results);
   }
@@ -63,7 +65,9 @@ export function Home() {
       return;
     }
     const result = await api.get(
-      `/characters?name=${value}&ts=2&apikey=7de223381da2a01ec37a15c920c7dc57&hash=72d736266e3888d5923aecb9b3b0c8b6`
+      `/characters?name=${value}&ts=${timestamp}&apikey=${
+        import.meta.env.VITE_PUBLIC_KEY
+      }&hash=${generateHash}`
     );
     setCharacters(result.data.data.results);
   }, 500);

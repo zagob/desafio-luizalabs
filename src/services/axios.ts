@@ -1,5 +1,5 @@
-import axios from 'axios'
+import axios from "axios";
 
 export const api = axios.create({
-    baseURL: 'http://gateway.marvel.com/v1/public/',
-})
+  baseURL: `${import.meta.env.VITE_URL_API}`,
+});

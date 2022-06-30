@@ -15,6 +15,7 @@ import { api } from "../../services/axios";
 
 import styles from "./CharacterDetail.module.scss";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
+import { generateHash, timestamp } from "../../utils/generateHashUrl";
 
 interface CharacterDetailProps {
   name: string;
@@ -58,10 +59,14 @@ export function CharactersDetail() {
     async function getCharacters() {
       try {
         const resultCharacter = await api.get(
-          `/characters/${id}?ts=2&apikey=7de223381da2a01ec37a15c920c7dc57&hash=72d736266e3888d5923aecb9b3b0c8b6`
+          `/characters/${id}?ts=${timestamp}&apikey=${
+            import.meta.env.VITE_PUBLIC_KEY
+          }&hash=${generateHash}`
         );
         const resultComics = await api.get(
-          `/characters/${id}/comics?orderBy=-onsaleDate&limit=10&ts=2&apikey=7de223381da2a01ec37a15c920c7dc57&hash=72d736266e3888d5923aecb9b3b0c8b6`
+          `/characters/${id}/comics?orderBy=-onsaleDate&limit=10&ts=${timestamp}&apikey=${
+            import.meta.env.VITE_PUBLIC_KEY
+          }&hash=${generateHash}`
         );
 
         const endDateComic: string =
