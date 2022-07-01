@@ -97,7 +97,7 @@ export function CharactersDetail() {
         <header>
           <div>
             <button onClick={() => navigate("/")}>
-              <CaretLeft size={32} weight="fill" />
+              <CaretLeft size={30} weight="bold" />
               <span>voltar</span>
             </button>
           </div>
