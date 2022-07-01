@@ -1,5 +1,5 @@
 import styles from "./home.module.scss";
-import { Heart, MagnifyingGlass } from "phosphor-react";
+import { ArrowFatLinesUp, Heart, MagnifyingGlass } from "phosphor-react";
 import { CardHeroes } from "../../components/CardHeroes";
 import { useEffect, useState } from "react";
 import { api } from "../../services/axios";
@@ -32,22 +32,43 @@ export function Home() {
 
   const [loading, setLoading] = useState(false);
   const [loadingMoreHeroes, setLoadingMoreHeroes] = useState(false);
+  const [errorRequest, setErrorRequest] = useState(false);
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   async function getCharacters(orderByName: boolean) {
-    setLoading(true);
-    const result = await api.get(
-      `/characters?orderBy=${
-        orderByName ? "-name" : "name"
-      }&ts=${timestamp}&apikey=${
-        import.meta.env.VITE_PUBLIC_KEY
-      }&hash=${generateHash}`
-    );
+    try {
+      setLoading(true);
+      const result = await api.get(
+        `/characters?orderBy=${
+          orderByName ? "-name" : "name"
+        }&ts=${timestamp}&apikey=${
+          import.meta.env.VITE_PUBLIC_KEY
+        }&hash=${generateHash}`
+      );
+      if (result) {
+        setErrorRequest(false);
+      }
 
-    if (result) {
+      setCharacters(result.data.data.results);
+    } catch (err) {
+      setErrorRequest(true);
+    } finally {
       setLoading(false);
     }
-
-    setCharacters(result.data.data.results);
   }
 
   useEffect(() => {
@@ -99,6 +120,19 @@ export function Home() {
 
   return (
     <div className={styles.container}>
+      {scrollPosition > 1000 && (
+        <div className={styles.pageUp}>
+          <button
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+              })
+            }
+          >
+            <ArrowFatLinesUp size={50} />
+          </button>
+        </div>
+      )}
       <header className={styles.header}>
         <img src={logo} alt="Logo da marvel" />
 
@@ -133,6 +167,7 @@ export function Home() {
                   Somente favoritos
                 </span>
                 <InputCheckFilter
+                  checked={checkFilterFavorite}
                   onChange={(e) => setCheckFilterFavorite(e.target.checked)}
                 />
               </div>
@@ -160,10 +195,30 @@ export function Home() {
               <UseSkeletonLoading />
             </div>
           ) : (
-            <div className={styles.loadingMoreHeroes}>
-              <button onClick={handleLoadedMoreHeroes}>
-                Carregar mais personagens
-              </button>
+            <>
+              {checkFilterFavorite ? (
+                ""
+              ) : (
+                <>
+                  {!errorRequest && (
+                    <div className={styles.loadingMoreHeroes}>
+                      <button onClick={handleLoadedMoreHeroes}>
+                        Carregar mais personagens
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+          {checkFilterFavorite && favoriteName.length === 0 && (
+            <div className={styles.noneCharacterFavorite}>
+              <span>Nenhum personagem encontrado</span>
+            </div>
+          )}
+          {errorRequest && (
+            <div className={styles.noneCharacterFavorite}>
+              <span>Nenhum personagem encontrado</span>
             </div>
           )}
         </>
