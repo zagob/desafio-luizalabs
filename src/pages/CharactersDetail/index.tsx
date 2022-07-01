@@ -1,6 +1,7 @@
 import { CaretLeft, Heart, Star } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import pt from "date-fns/locale/pt";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardComic } from "../../components/CardComic";
 import { api } from "../../services/axios";
@@ -45,6 +46,7 @@ export function CharactersDetail() {
   const [dataCharacter, setDataCharacter] = useState<CharacterDetailProps>();
   const [dataComics, setDataComics] = useState<ComicProps[]>([]);
   const [finalDateComic, setDateComic] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const isCharacterFavorite = favoriteName.some(
     (favorite) => favorite === dataCharacter?.name
@@ -54,6 +56,7 @@ export function CharactersDetail() {
   useEffect(() => {
     async function getCharacters() {
       try {
+        setLoading(true);
         const resultCharacter = await api.get(
           `/characters/${id}?ts=${timestamp}&apikey=${
             import.meta.env.VITE_PUBLIC_KEY
@@ -70,13 +73,18 @@ export function CharactersDetail() {
             (date: { type: string }) => date.type === "onsaleDate"
           )[0].date;
 
-        setDateComic(format(new Date(endDateComic), "dd MMM'.'  y"));
+        setDateComic(
+          format(new Date(endDateComic), "dd MMM'.'  y", {
+            locale: pt,
+          })
+        );
 
         setDataCharacter(resultCharacter.data.data.results[0]);
         setDataComics(resultComics.data.data.results);
       } catch (err) {
         navigate("/");
       } finally {
+        setLoading(false);
       }
     }
 
@@ -95,88 +103,98 @@ export function CharactersDetail() {
           </div>
           <img src={logoMobile} />
         </header>
-        <section className={styles.containerDetail}>
-          <div className={styles.contentInfo}>
-            <div className={styles.info}>
-              <div className={styles.headerInfo}>
-                <h1>{dataCharacter?.name}</h1>
+        {loading ? (
+          <div className={styles.loading}>
+            <h1>Carregando...</h1>
+          </div>
+        ) : (
+          <>
+            <section className={styles.containerDetail}>
+              <div className={styles.contentInfo}>
+                <div className={styles.info}>
+                  <div className={styles.headerInfo}>
+                    <h1>{dataCharacter?.name}</h1>
 
-                {isCharacterFavorite ? (
-                  <Heart
-                    weight="fill"
-                    size={32}
-                    onClick={() => handleRemoveFavorite(dataCharacter?.name!)}
-                  />
-                ) : (
-                  <Heart
-                    className={isFavoriteBlock ? styles.block : ""}
-                    weight={isFavoriteBlock ? "thin" : "regular"}
-                    size={32}
-                    onClick={
-                      isFavoriteBlock
-                        ? () => {}
-                        : () => handleAddFavorite(dataCharacter?.name!)
-                    }
-                  />
-                )}
-              </div>
-              <p>
-                {dataCharacter?.description === ""
-                  ? "Nenhuma descrição encontrada"
-                  : dataCharacter?.description}
-              </p>
-            </div>
-
-            <div className={styles.contentStatus}>
-              <div className={styles.status}>
-                <div>
-                  <span>Quadrinhos</span>
-                  <span>
-                    <img src={iconAvailable} alt="" />
-                    {dataCharacter?.comics.available}
-                  </span>
+                    {isCharacterFavorite ? (
+                      <Heart
+                        weight="fill"
+                        size={32}
+                        onClick={() =>
+                          handleRemoveFavorite(dataCharacter?.name!)
+                        }
+                      />
+                    ) : (
+                      <Heart
+                        className={isFavoriteBlock ? styles.block : ""}
+                        weight={isFavoriteBlock ? "thin" : "regular"}
+                        size={32}
+                        onClick={
+                          isFavoriteBlock
+                            ? () => {}
+                            : () => handleAddFavorite(dataCharacter?.name!)
+                        }
+                      />
+                    )}
+                  </div>
+                  <p>
+                    {dataCharacter?.description === ""
+                      ? "Nenhuma descrição encontrada"
+                      : dataCharacter?.description}
+                  </p>
                 </div>
-                <div>
-                  <span>Filmes</span>
-                  <span>
-                    <img src={iconMovie} alt="" />
-                    {dataCharacter?.series.available}
+
+                <div className={styles.contentStatus}>
+                  <div className={styles.status}>
+                    <div>
+                      <span>Quadrinhos</span>
+                      <span>
+                        <img src={iconAvailable} alt="" />
+                        {dataCharacter?.comics.available}
+                      </span>
+                    </div>
+                    <div>
+                      <span>Filmes</span>
+                      <span>
+                        <img src={iconMovie} alt="" />
+                        {dataCharacter?.series.available}
+                      </span>
+                    </div>
+                  </div>
+
+                  <span className={styles.rating}>
+                    Rating:
+                    <Star size={16} weight="fill" color="red" />
+                    <Star size={16} weight="fill" color="red" />
+                    <Star size={16} weight="regular" color="red" />
+                    <Star size={16} weight="regular" color="red" />
+                    <Star size={16} weight="regular" color="red" />
                   </span>
+                  <span>Último quadrinho: {finalDateComic}</span>
                 </div>
               </div>
+              <div className={styles.image}>
+                <img
+                  src={`${dataCharacter?.thumbnail.path}/detail.${dataCharacter?.thumbnail.extension}`}
+                  alt=""
+                />
+              </div>
+            </section>
 
-              <span className={styles.rating}>
-                Rating:
-                <Star size={16} weight="fill" color="red" />
-                <Star size={16} weight="fill" color="red" />
-                <Star size={16} weight="regular" color="red" />
-                <Star size={16} weight="regular" color="red" />
-                <Star size={16} weight="regular" color="red" />
-              </span>
-              <span>Último quadrinho: {finalDateComic}</span>
-            </div>
-          </div>
-          <div className={styles.image}>
-            <img
-              src={`${dataCharacter?.thumbnail.path}/detail.${dataCharacter?.thumbnail.extension}`}
-              alt=""
-            />
-          </div>
-        </section>
+            <section className={styles.sectionComics}>
+              <h2>Últimos lançamentos</h2>
 
-        <section className={styles.sectionComics}>
-          <h2>Últimos lançamentos</h2>
-
-          <div className={styles.comics}>
-            {dataComics.map((comic) => (
-              <CardComic
-                key={comic.id}
-                image={comic.thumbnail}
-                title={comic.title}
-              />
-            ))}
-          </div>
-        </section>
+              <div className={styles.comics}>
+                {dataComics.map((comic) => (
+                  <CardComic
+                    key={comic.id}
+                    image={comic.thumbnail}
+                    title={comic.title}
+                  />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
       </div>
     </>
   );

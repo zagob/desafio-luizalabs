@@ -11,11 +11,7 @@ import { generateHash, timestamp } from "../../utils/generateHashUrl";
 
 import logo from "/src/assets/logo.svg";
 import heroi from "/src/assets/ic_heroi.svg";
-import {
-  SkeletonLoadingCard,
-  UseSkeletonLoading,
-} from "../../components/SkeletonLoadingCard";
-import { SkeletonLoadingFilter } from "../../components/SkeletonLoadingFilter";
+import { UseSkeletonLoading } from "../../components/SkeletonLoadingCard";
 
 interface CharactersParams {
   id: number;
@@ -32,8 +28,10 @@ export function Home() {
   const [characters, setCharacters] = useState<CharactersParams[]>([]);
   const [checkFilterOrderName, setCheckFilterOrderName] = useState(false);
   const [checkFilterFavorite, setCheckFilterFavorite] = useState(false);
+  const [listPaginate, setListPaginate] = useState(20);
 
   const [loading, setLoading] = useState(false);
+  const [loadingMoreHeroes, setLoadingMoreHeroes] = useState(false);
 
   async function getCharacters(orderByName: boolean) {
     setLoading(true);
@@ -79,6 +77,26 @@ export function Home() {
     setCharacters(result.data.data.results);
   }, 500);
 
+  async function handleLoadedMoreHeroes() {
+    try {
+      setLoadingMoreHeroes(true);
+      const result = await api.get(
+        `/characters?orderBy=${
+          checkFilterOrderName ? "-name" : "name"
+        }&offset=${listPaginate}&ts=${timestamp}&apikey=${
+          import.meta.env.VITE_PUBLIC_KEY
+        }&hash=${generateHash}`
+      );
+
+      const data = result.data.data.results;
+
+      setListPaginate((paginate) => paginate + 20);
+      setCharacters((characters) => [...characters, ...data]);
+    } finally {
+      setLoadingMoreHeroes(false);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -94,40 +112,38 @@ export function Home() {
       <InputSearch onChange={(e) => debounced(e.target.value)} />
 
       <main className={styles.main}>
-        {loading ? (
-          <>
-            <SkeletonLoadingFilter />
+        <>
+          <div className={styles.contentFilter}>
+            <span>Encontrados {characters.length} heróis</span>
+
+            <div className={styles.filters}>
+              <div>
+                <span>
+                  <img src={heroi} alt="icone heroi" />
+                  ordenar por nome - A/Z
+                </span>
+                <InputCheckFilter
+                  checked={checkFilterOrderName}
+                  onChange={(e) => setCheckFilterOrderName(e.target.checked)}
+                />
+              </div>
+              <div>
+                <span>
+                  <Heart weight="fill" size={22} />
+                  Somente favoritos
+                </span>
+                <InputCheckFilter
+                  onChange={(e) => setCheckFilterFavorite(e.target.checked)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {loading ? (
             <div className={styles.contentCards}>
               <UseSkeletonLoading />
             </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.contentFilter}>
-              <span>Encontrados {characters.length} heróis</span>
-
-              <div className={styles.filters}>
-                <div>
-                  <span>
-                    <img src={heroi} alt="icone heroi" />
-                    ordenar por nome - A/Z
-                  </span>
-                  <InputCheckFilter
-                    onChange={(e) => setCheckFilterOrderName(e.target.checked)}
-                  />
-                </div>
-                <div>
-                  <span>
-                    <Heart weight="fill" size={22} />
-                    Somente favoritos
-                  </span>
-                  <InputCheckFilter
-                    onChange={(e) => setCheckFilterFavorite(e.target.checked)}
-                  />
-                </div>
-              </div>
-            </div>
-
+          ) : (
             <div className={styles.contentCards}>
               {characters.map((character) => (
                 <CardHeroes
@@ -138,8 +154,19 @@ export function Home() {
                 />
               ))}
             </div>
-          </>
-        )}
+          )}
+          {loadingMoreHeroes ? (
+            <div className={styles.contentCards}>
+              <UseSkeletonLoading />
+            </div>
+          ) : (
+            <div className={styles.loadingMoreHeroes}>
+              <button onClick={handleLoadedMoreHeroes}>
+                Carregar mais personagens
+              </button>
+            </div>
+          )}
+        </>
       </main>
     </div>
   );

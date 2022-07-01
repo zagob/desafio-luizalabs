@@ -91,10 +91,28 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    @media (max-width: 400px) {
+    @media (max-width: 500px) {
       grid-template-columns: 1fr;
     }
   }
+
+  .loadingMoreHeroes {
+    width: 100%;
+    text-align: center;
+
+    button {
+      background: transparent;
+      border: none;
+      text-decoration: underline;
+
+      transition: 0.2s;
+
+      &:hover {
+        color: var(--gray-500);
+      }
+    }
+  }
+
   .loading {
     height: 100vh;
     text-align: center;
