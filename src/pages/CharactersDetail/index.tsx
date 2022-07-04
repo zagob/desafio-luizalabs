@@ -4,7 +4,6 @@ import { format } from "date-fns";
 import pt from "date-fns/locale/pt";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardComic } from "../../components/CardComic";
-import { api } from "../../services/axios";
 
 import styles from "./CharacterDetail.module.scss";
 import { useFavoriteContextProvider } from "../../contexts/FavoriteCharacterContext";
@@ -13,6 +12,10 @@ import { generateHash, timestamp } from "../../utils/generateHashUrl";
 import logoMobile from "/src/assets/logo_menor.svg";
 import iconAvailable from "/src/assets/ic_quadrinhos.svg";
 import iconMovie from "/src/assets/ic_trailer.svg";
+import {
+  getDetailCharacter,
+  getDetailCharacterOfComic,
+} from "../../requestsAPI/characters";
 
 interface CharacterDetailProps {
   name: string;
@@ -57,15 +60,17 @@ export function CharactersDetail() {
     async function getCharacters() {
       try {
         setLoading(true);
-        const resultCharacter = await api.get(
-          `/characters/${id}?ts=${timestamp}&apikey=${
-            import.meta.env.VITE_PUBLIC_KEY
-          }&hash=${generateHash}`
+
+        const resultCharacter = await getDetailCharacter(
+          id,
+          timestamp,
+          generateHash
         );
-        const resultComics = await api.get(
-          `/characters/${id}/comics?orderBy=-onsaleDate&limit=10&ts=${timestamp}&apikey=${
-            import.meta.env.VITE_PUBLIC_KEY
-          }&hash=${generateHash}`
+
+        const resultComics = await getDetailCharacterOfComic(
+          id,
+          timestamp,
+          generateHash
         );
 
         const endDateComic: string =

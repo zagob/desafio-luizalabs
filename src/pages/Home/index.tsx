@@ -1,8 +1,7 @@
 import styles from "./home.module.scss";
-import { ArrowFatLinesUp, Heart, MagnifyingGlass } from "phosphor-react";
+import { ArrowFatLinesUp, Heart } from "phosphor-react";
 import { CardHeroes } from "../../components/CardHeroes";
 import { useEffect, useState } from "react";
-import { api } from "../../services/axios";
 import { useDebouncedCallback } from "use-debounce";
 import { InputSearch } from "../../components/InputSearch";
 import { InputCheckFilter } from "../../components/InputCheckFilter";
@@ -12,6 +11,11 @@ import { generateHash, timestamp } from "../../utils/generateHashUrl";
 import logo from "/src/assets/logo.svg";
 import heroi from "/src/assets/ic_heroi.svg";
 import { UseSkeletonLoading } from "../../components/SkeletonLoadingCard";
+import {
+  getCharactersAPI,
+  getCharacterWithName,
+  getMoreCharacters,
+} from "../../requestsAPI/characters";
 
 interface CharactersParams {
   id: number;
@@ -52,13 +56,13 @@ export function Home() {
   async function getCharacters(orderByName: boolean) {
     try {
       setLoading(true);
-      const result = await api.get(
-        `/characters?orderBy=${
-          orderByName ? "-name" : "name"
-        }&ts=${timestamp}&apikey=${
-          import.meta.env.VITE_PUBLIC_KEY
-        }&hash=${generateHash}`
+
+      const result = await getCharactersAPI(
+        orderByName,
+        timestamp,
+        generateHash
       );
+
       if (result) {
         setErrorRequest(false);
       }
@@ -90,23 +94,19 @@ export function Home() {
       getCharacters(checkFilterOrderName);
       return;
     }
-    const result = await api.get(
-      `/characters?name=${value}&ts=${timestamp}&apikey=${
-        import.meta.env.VITE_PUBLIC_KEY
-      }&hash=${generateHash}`
-    );
+    const result = await getCharacterWithName(value, timestamp, generateHash);
+
     setCharacters(result.data.data.results);
   }, 500);
 
   async function handleLoadedMoreHeroes() {
     try {
       setLoadingMoreHeroes(true);
-      const result = await api.get(
-        `/characters?orderBy=${
-          checkFilterOrderName ? "-name" : "name"
-        }&offset=${listPaginate}&ts=${timestamp}&apikey=${
-          import.meta.env.VITE_PUBLIC_KEY
-        }&hash=${generateHash}`
+      const result = await getMoreCharacters(
+        checkFilterOrderName,
+        listPaginate,
+        timestamp,
+        generateHash
       );
 
       const data = result.data.data.results;
