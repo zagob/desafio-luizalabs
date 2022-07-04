@@ -129,7 +129,7 @@ export function Home() {
               })
             }
           >
-            <ArrowFatLinesUp size={50} />
+            <ArrowFatLinesUp size={26} />
           </button>
         </div>
       )}
