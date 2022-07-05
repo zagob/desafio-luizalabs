@@ -27,6 +27,8 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 ## 💻 Projeto
 
 O Marvel person é um app de listagem de todos os personagem da Marvel, podendo mostrar suas caracteristicas e seus principais quadrinhos.
+<br>
+- <a href="https://desafio-luizalabs-one.vercel.app/">Acessar App</a>
 
 ## 🚀 Como executar
 
